@@ -58,18 +58,18 @@ uint8_t Motor_Rx[4];
 uint8_t K230_Rx[8];
 __IO uint8_t bean_flag=0;
 __IO uint8_t position_flag = 0;
-__IO uint8_t bean_locked=0;       // �? 新增：bean_color �?
-__IO uint8_t position_locked = 0;   // �? 新增：number_position �?
+__IO uint8_t bean_locked=0;       // �?? 新�?�：bean_color �??
+__IO uint8_t position_locked = 0;   // �?? 新�?�：number_position �??
 uint8_t count=0;
 /*�ⲿ�ж�*/
-volatile uint32_t last_exti_tick = 0;    // �ϴ��жϴ���ʱ���?
+volatile uint32_t last_exti_tick = 0;    // �ϴ��жϴ���ʱ���??
 volatile uint32_t count1 = 0;            // �ܴ�������������
 volatile uint8_t exti_flag = 0;          // �жϱ�־λ��0=δ������1=�Ѵ�����
 volatile uint8_t pin7_triggered = 0;     // PIN7 ����������־
 volatile uint8_t pin8_triggered = 0;     // PIN8 ����������־
 // ����ȫ�ֱ�������������
 volatile uint8_t bean_color[3];       ////�����ҵ���ɫ ��0x01������ɫ������0-2��Ӧλ��1-3
-volatile uint8_t number_position[5];  ////�����ҵ����� ��0x03����λ�ñ�ţ�?1-5
+volatile uint8_t number_position[5];  ////�����ҵ����� ��0x03����λ�ñ�ţ�??1-5
 uint8_t flag_1;
  uint8_t flag_2;
 // �������ṹ�壺��ɫ+��Ӧλ��
@@ -88,14 +88,14 @@ void SystemClock_Config(void);
 
 
 /**
-   * @brief  �? LED 闪烁验证 number_position[5] 是否读到真实数据
+   * @brief  �?? LED �?烁验�? number_position[5] �?否�?�到真实数据
    *
-   * 规则�?
-   *   数组�? i 位（箱子编号 1~5）的值是多少，LED 就闪多少下�??
-   *   值为 0 表示该位置没读到数据 �? 快闪 10 下报警�??
-   *   每显示完�?个位置停 1.5 秒，方便人眼区分�?
+   * 规则�??
+   *   数组�?? i 位（箱子编号 1~5）的值是多少，LED 就闪多少下�??
+   *   值为 0 表示该位�?没�?�到数据 �?? �?�? 10 下报警�??
+   *   每显示完�??�?位置�? 1.5 秒，方便人眼区分�??
    *
-   * 调用位置：K230 返回 0x03 指令后，number_position 被填充完即可调用�?
+   * 调用位置：K230 返回 0x03 指令后，number_position �?�?充完即可调用�??
    */
 void Verify_NumberPosition(void)
  {
@@ -104,7 +104,7 @@ void Verify_NumberPosition(void)
           uint8_t val = number_position[i];
 
           /*
-           * �?头提示：快闪 1 下，表示"接下来是�? i+1 个箱�?"
+           * �??头提示：�?�? 1 下，表示"接下来是�?? i+1 �?箱�?"
            */
           HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
           HAL_Delay(100);
@@ -112,11 +112,11 @@ void Verify_NumberPosition(void)
           HAL_Delay(300);
 
           /*
-           * 根据数�?�闪烁对应次�?
+           * 根据数�?�闪烁�?�应次�?
            */
           if (val == 0)
           {
-              /* 没读到数据：快闪 10 下报�? */
+              /* 没�?�到数据：快�? 10 下报�?? */
               for (uint8_t j = 0; j < 10; j++)
               {
                   HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
@@ -127,7 +127,7 @@ void Verify_NumberPosition(void)
           }
           else
           {
-              /* 读到的是数字几就闪几�? */
+              /* 读到的是数字几就�?几�? */
               for (uint8_t j = 0; j < val; j++)
               {
                   HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
@@ -137,7 +137,7 @@ void Verify_NumberPosition(void)
               }
           }
 
-          /* 每个箱子之间停顿 3 �? */
+          /* 每个箱子之间停顿 3 �?? */
           HAL_Delay(3000);
       }
   }
@@ -197,8 +197,8 @@ int main(void)
       if (r == HAL_OK)
           HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
       else if (r == HAL_BUSY)
-          HAL_GPIO_TogglePin(LED_PORT, LED_PIN);  /* BUSY也闪一下 */
-
+          HAL_GPIO_TogglePin(LED_PORT, LED_PIN);  /* BUSY也闪一�? */
+      HAL_Delay(1000);
       HAL_Delay(5);
   }
   /* USER CODE END WHILE */
@@ -257,12 +257,12 @@ if (huart->Instance == USART3)
       {
           if (K230_Rx[0] == 0x02)
           {
-              /* 只有未锁�? �? 数据非全�? 才保�? */
+              /* �?有未锁�? �?? 数据非全�?? 才保�?? */
               if (!bean_locked && (K230_Rx[2] != 0 && K230_Rx[3] != 0 && K230_Rx[4] != 0))
               {
                   for (int i = 0; i < 3; i++)
                       bean_color[i] = K230_Rx[i + 2];
-                  bean_locked = 1;   // �? 锁住，后续数据全忽略
+                  bean_locked = 1;   // �?? 锁住，后�?数据全忽�?
                   bean_flag = 1;
               }
           }
