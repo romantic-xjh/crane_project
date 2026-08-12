@@ -58,21 +58,21 @@ uint8_t Motor_Rx[4];
 uint8_t K230_Rx[8];
 __IO uint8_t bean_flag=0;
 __IO uint8_t position_flag = 0;
-__IO uint8_t bean_locked=0;       // �?? 新�?�：bean_color �??
-__IO uint8_t position_locked = 0;   // �?? 新�?�：number_position �??
+__IO uint8_t bean_locked=0;       // ï¿?? æ–°å?žï¼šbean_color ï¿??
+__IO uint8_t position_locked = 0;   // ï¿?? æ–°å?žï¼šnumber_position ï¿??
 uint8_t count=0;
-/*�ⲿ�ж�*/
-volatile uint32_t last_exti_tick = 0;    // �ϴ��жϴ���ʱ���??
-volatile uint32_t count1 = 0;            // �ܴ�������������
-volatile uint8_t exti_flag = 0;          // �жϱ�־λ��0=δ������1=�Ѵ�����
-volatile uint8_t pin7_triggered = 0;     // PIN7 ����������־
-volatile uint8_t pin8_triggered = 0;     // PIN8 ����������־
-// ����ȫ�ֱ�������������
-volatile uint8_t bean_color[3];       ////�����ҵ���ɫ ��0x01������ɫ������0-2��Ӧλ��1-3
-volatile uint8_t number_position[5];  ////�����ҵ����� ��0x03����λ�ñ�ţ�??1-5
+/*ï¿½â²¿ï¿½Ð¶ï¿½*/
+volatile uint32_t last_exti_tick = 0;    // ï¿½Ï´ï¿½ï¿½Ð¶Ï´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿??
+volatile uint32_t count1 = 0;            // ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+volatile uint8_t exti_flag = 0;          // ï¿½Ð¶Ï±ï¿½Ö¾Î»ï¿½ï¿½0=Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1=ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½
+volatile uint8_t pin7_triggered = 0;     // PIN7 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾
+volatile uint8_t pin8_triggered = 0;     // PIN8 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾
+// ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+volatile uint8_t bean_color[3];       ////ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½É« ï¿½ï¿½0x01ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0-2ï¿½ï¿½Ó¦Î»ï¿½ï¿½1-3
+volatile uint8_t number_position[5];  ////ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½0x03ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã±ï¿½Å£ï¿??1-5
 uint8_t flag_1;
  uint8_t flag_2;
-// �������ṹ�壺��ɫ+��Ӧλ��
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½å£ºï¿½ï¿½É«+ï¿½ï¿½Ó¦Î»ï¿½ï¿½
 
 /* USER CODE END PV */
 
@@ -88,14 +88,14 @@ void SystemClock_Config(void);
 
 
 /**
-   * @brief  �?? LED �?烁验�? number_position[5] �?否�?�到真实数据
+   * @brief  ï¿?? LED é—?çƒéªŒè¯? number_position[5] æ˜?å¦è?»åˆ°çœŸå®žæ•°æ®
    *
-   * 规则�??
-   *   数组�?? i 位（箱子编号 1~5）的值是多少，LED 就闪多少下�??
-   *   值为 0 表示该位�?没�?�到数据 �?? �?�? 10 下报警�??
-   *   每显示完�??�?位置�? 1.5 秒，方便人眼区分�??
+   * è§„åˆ™ï¿??
+   *   æ•°ç»„ï¿?? i ä½ï¼ˆç®±å­ç¼–å· 1~5ï¼‰çš„å€¼æ˜¯å¤šå°‘ï¼ŒLED å°±é—ªå¤šå°‘ä¸‹ï¿½??
+   *   å€¼ä¸º 0 è¡¨ç¤ºè¯¥ä½ç½?æ²¡è?»åˆ°æ•°æ® ï¿?? å¿?é—? 10 ä¸‹æŠ¥è­¦ï¿½??
+   *   æ¯æ˜¾ç¤ºå®Œï¿??ä¸?ä½ç½®å? 1.5 ç§’ï¼Œæ–¹ä¾¿äººçœ¼åŒºåˆ†ï¿??
    *
-   * 调用位置：K230 返回 0x03 指令后，number_position �?�?充完即可调用�??
+   * è°ƒç”¨ä½ç½®ï¼šK230 è¿”å›ž 0x03 æŒ‡ä»¤åŽï¼Œnumber_position è¢?å¡?å……å®Œå³å¯è°ƒç”¨ï¿??
    */
 void Verify_NumberPosition(void)
  {
@@ -104,7 +104,7 @@ void Verify_NumberPosition(void)
           uint8_t val = number_position[i];
 
           /*
-           * �??头提示：�?�? 1 下，表示"接下来是�?? i+1 �?箱�?"
+           * ï¿??å¤´æç¤ºï¼šå¿?é—? 1 ä¸‹ï¼Œè¡¨ç¤º"æŽ¥ä¸‹æ¥æ˜¯ï¿?? i+1 ä¸?ç®±ï¿½?"
            */
           HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
           HAL_Delay(100);
@@ -112,11 +112,11 @@ void Verify_NumberPosition(void)
           HAL_Delay(300);
 
           /*
-           * 根据数�?�闪烁�?�应次�?
+           * æ ¹æ®æ•°ï¿½?ï¿½é—ªçƒå?¹åº”æ¬¡ï¿½?
            */
           if (val == 0)
           {
-              /* 没�?�到数据：快�? 10 下报�?? */
+              /* æ²¡è?»åˆ°æ•°æ®ï¼šå¿«é—? 10 ä¸‹æŠ¥ï¿?? */
               for (uint8_t j = 0; j < 10; j++)
               {
                   HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
@@ -127,7 +127,7 @@ void Verify_NumberPosition(void)
           }
           else
           {
-              /* 读到的是数字几就�?几�? */
+              /* è¯»åˆ°çš„æ˜¯æ•°å­—å‡ å°±é—?å‡ ï¿½? */
               for (uint8_t j = 0; j < val; j++)
               {
                   HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
@@ -137,7 +137,7 @@ void Verify_NumberPosition(void)
               }
           }
 
-          /* 每个箱子之间停顿 3 �?? */
+          /* æ¯ä¸ªç®±å­ä¹‹é—´åœé¡¿ 3 ï¿?? */
           HAL_Delay(3000);
       }
   }
@@ -197,7 +197,8 @@ int main(void)
       if (r == HAL_OK)
           HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
       else if (r == HAL_BUSY)
-          HAL_GPIO_TogglePin(LED_PORT, LED_PIN);  /* BUSY也闪一�? */
+          HAL_GPIO_TogglePin(LED_PORT, LED_PIN);  /* BUSYä¹Ÿé—ªä¸€ä¸? */
+      HAL_Delay(500);
       HAL_Delay(1000);
       HAL_Delay(5);
   }
@@ -257,12 +258,12 @@ if (huart->Instance == USART3)
       {
           if (K230_Rx[0] == 0x02)
           {
-              /* �?有未锁�? �?? 数据非全�?? 才保�?? */
+              /* å?æœ‰æœªé”ï¿½? ï¿?? æ•°æ®éžå…¨ï¿?? æ‰ä¿ï¿?? */
               if (!bean_locked && (K230_Rx[2] != 0 && K230_Rx[3] != 0 && K230_Rx[4] != 0))
               {
                   for (int i = 0; i < 3; i++)
                       bean_color[i] = K230_Rx[i + 2];
-                  bean_locked = 1;   // �?? 锁住，后�?数据全忽�?
+                  bean_locked = 1;   // ï¿?? é”ä½ï¼ŒåŽç»?æ•°æ®å…¨å¿½ç•?
                   bean_flag = 1;
               }
           }
