@@ -1,0 +1,12 @@
+# Keil MDK-ARM 编译产物
+MDK-ARM/crane/
+MDK-ARM/DebugConfig/
+
+# Keil 用户配置（每个用户不同）
+*.uvguix.*
+
+# IDE
+.vscode/
+
+# Claude
+.claude/
